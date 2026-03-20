@@ -4,7 +4,7 @@ This repository contains the interactive technical manual, system architecture, 
 
 ### 🚀 Access the Live Manual
 The documentation is hosted as a live, interactive website. 
-**[CLICK HERE TO VIEW THE DOCUMENTATION](INSERT_YOUR_PAGES_URL_HERE)**
+**[CLICK HERE TO VIEW THE DOCUMENTATION](https://mudeshankarnaik.github.io/databridge/)**
 
 ---
 
