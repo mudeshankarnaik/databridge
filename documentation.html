@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataBridge Pro | Technical Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root { --primary-blue: #0d6efd; --dark-bg: #121416; --sidebar-width: 280px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; position: relative; }
+        
+        /* Sidebar Navigation */
+        .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; background: var(--dark-bg); color: #fff; overflow-y: auto; padding: 20px 0; z-index: 1000; }
+        .sidebar-link { padding: 12px 25px; display: block; color: #a0a0a0; text-decoration: none; border-left: 4px solid transparent; transition: 0.3s; font-size: 0.9rem; }
+        .sidebar-link:hover { background: #1d2125; color: #fff; }
+        
+        /* Fixed Highlighting: Only one item active at a time */
+        .sidebar-link.active { 
+            background: #1d2125 !important; 
+            color: var(--primary-blue) !important; 
+            border-left-color: var(--primary-blue) !important; 
+            font-weight: 600; 
+        }
+
+        .main-content { margin-left: var(--sidebar-width); padding: 50px 80px; }
+        .section-header { border-bottom: 2px solid #eee; margin-bottom: 30px; padding-bottom: 10px; color: #0056b3; font-weight: 700; padding-top: 20px;}
+        
+        .ui-badge { background: #e9ecef; border: 1px solid #dee2e6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #d63384; }
+        .logic-card { border-left: 5px solid #0d6efd; background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        
+        pre { background: #2d2d2d; color: #ccc; padding: 20px; border-radius: 8px; font-size: 0.85rem; overflow-x: auto; }
+        .table-technical { font-size: 0.9rem; }
+        .table-technical thead { background: #f8f9fa; }
+
+        .flow-box { border: 2px dashed #0d6efd; border-radius: 15px; padding: 25px; background: #fff; text-align: center; margin: 20px 0; }
+        .step-arrow { font-size: 1.2rem; color: #0d6efd; margin: 0 10px; }
+    </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#sidebar-nav" data-bs-offset="120">
+
+<nav id="sidebar-nav" class="sidebar shadow">
+    <div class="px-4 mb-4 text-center">
+        <h4 class="text-white">🌉 DataBridge <span class="text-primary">Pro</span></h4>
+        <span class="badge bg-primary">v1.0.0 Enterprise</span>
+    </div>
+    <div class="nav flex-column">
+        <a href="#intro" class="sidebar-link">1. Project Intent</a>
+        <a href="#architecture" class="sidebar-link">2. System Architecture</a>
+        <a href="#workflow" class="sidebar-link">3. Process Flow Chart</a>
+        <a href="#ui-map" class="sidebar-link">4. User Interface Map</a>
+        <a href="#logic-engine" class="sidebar-link">5. Data Transformation Logic</a>
+        <a href="#roles" class="sidebar-link">6. RBAC & Permissions</a>
+        <a href="#db-schema" class="sidebar-link">7. Database Dictionary</a>
+        <a href="#troubleshooting" class="sidebar-link">8. Debugging Protocols</a>
+    </div>
+</nav>
+
+<main class="main-content">
+    
+    <section id="intro">
+        <h2 class="section-header">1. Project Intent & Scope</h2>
+        <p>DataBridge Pro is a specialized middleware platform designed to automate the extraction of data from <strong>Hadoop/Hive</strong> ecosystems into <strong>ClickHouse</strong> for sub-second analytical querying. It centralizes credential management, SQL versioning, and automated job scheduling into a single governed interface.</p>
+    </section>
+
+    <section id="architecture">
+        <h2 class="section-header">2. System Architecture</h2>
+        <p>The system is built on a decoupled architecture to separate the <strong>Management Layer</strong> from the <strong>Execution Engine</strong>.</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5>Web Application (app.py)</h5>
+                <p class="small text-muted">A Streamlit-based interface that handles session-based authentication, interactive SQL authoring, and manual ad-hoc pushes.</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Automation Worker (worker.py)</h5>
+                <p class="small text-muted">A headless background service that continuously monitors <code>bridge_metadata.db</code> to trigger scheduled sync tasks based on time-based logic.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="workflow">
+        <h2 class="section-header">3. Operational Process Flow</h2>
+        <p>The sequential journey of a synchronization task:</p>
+        
+        <div class="flow-box shadow-sm">
+            <span class="badge bg-dark">LOGIN</span> <span class="step-arrow">➔</span>
+            <span class="badge bg-secondary">CREDENTIALS</span> <span class="step-arrow">➔</span>
+            <span class="badge bg-primary">WRITE SQL</span> <span class="step-arrow">➔</span>
+            <span class="badge bg-info">AD-HOC PUSH</span> <span class="step-arrow">➔</span>
+            <span class="badge bg-success">SCHEDULE</span>
+        </div>
+    </section>
+
+    <section id="ui-map">
+        <h2 class="section-header">4. User Interface Map</h2>
+        <p>The portal is divided into five logical tabs. Access is restricted based on the user's assigned role.</p>
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold"><i class="bi bi-person-circle"></i> Profile Tab</h5>
+                <p>Mandatory setup for Hive and ClickHouse connections. Use <span class="ui-badge text-primary">Test Connection</span> to validate network routes before saving.</p>
+                
+                <h5 class="fw-bold mt-4"><i class="bi bi-code-square"></i> Transformer Tab</h5>
+                <ul>
+                    <li><strong>Query Editor:</strong> Multi-line SQL workspace.</li>
+                    <li><strong>Preview & Schema:</strong> Executes a <code>LIMIT 10</code> on Hive to auto-generate the ClickHouse table structure.</li>
+                    <li><strong>Library:</strong> Sidebar containing <span class="ui-badge">Approved Library</span> (Global) and <span class="ui-badge">Local Workspace</span> (User-specific).</li>
+                </ul>
+
+                <h5 class="fw-bold mt-4"><i class="bi bi-calendar-check"></i> Deploy & Schedule</h5>
+                <p>Configuration of automation. Defines <span class="ui-badge">Sync Nature</span> (Replace vs Append) and <span class="ui-badge">Frequency</span> (Daily/Monthly/Hourly/Minutes).</p>
+
+                <h5 class="fw-bold mt-4"><i class="bi bi-speedometer2"></i> Dashboard</h5>
+                <p>Real-time monitoring of task statuses (Success/Failure) and row counts for auditing.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="logic-engine">
+        <h2 class="section-header">5. Data Transformation Logic</h2>
+        <div class="logic-card">
+            <h6>Column Sanitization Logic</h6>
+            <p class="small">To prevent ClickHouse ingestion errors, the portal applies the following regex-based cleaning to all incoming Hive columns:</p>
+            <code>re.sub(r'[^a-zA-Z0-9_]', '_', col_name)</code>
+        </div>
+
+        <div class="logic-card">
+            <h6>Dynamic Type Mapping Engine</h6>
+            <p class="small">Ensures that every ClickHouse column is <code>Nullable</code> to accommodate missing data in the source Lake.</p>
+            <table class="table table-sm table-technical border mt-2">
+                <thead><tr><th>Pandas Dtype</th><th>ClickHouse Target Type</th></tr></thead>
+                <tbody>
+                    <tr><td>int64</td><td><code>Nullable(Int64)</code></td></tr>
+                    <tr><td>float64</td><td><code>Nullable(Float64)</code></td></tr>
+                    <tr><td>datetime64</td><td><code>Nullable(DateTime)</code></td></tr>
+                    <tr><td>bool</td><td><code>Nullable(UInt8)</code></td></tr>
+                    <tr><td>object / other</td><td><code>Nullable(String)</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="roles">
+        <h2 class="section-header">6. RBAC & User Limitations</h2>
+        <p>The system enforces strict Role-Based Access Control to maintain data integrity in production environments.</p>
+        <table class="table table-bordered table-technical shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Feature / Capability</th>
+                    <th>Developer Role</th>
+                    <th>Admin Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Create Local Metrics</td>
+                    <td>✅ Allowed</td>
+                    <td>✅ Allowed</td>
+                </tr>
+                <tr>
+                    <td>Direct Table Deletion</td>
+                    <td>❌ Restricted (Request Only)</td>
+                    <td>✅ Allowed</td>
+                </tr>
+                <tr>
+                    <td>User Management (CRUD)</td>
+                    <td>❌ Hidden</td>
+                    <td>✅ Allowed</td>
+                </tr>
+                <tr>
+                    <td>Manual Ad-hoc Data Push</td>
+                    <td>✅ Allowed</td>
+                    <td>✅ Allowed</td>
+                </tr>
+                <tr>
+                    <td>Promote to Approved Library</td>
+                    <td>❌ Restricted (Request Only)</td>
+                    <td>✅ Allowed</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="db-schema">
+        <h2 class="section-header">7. Database Dictionary (bridge_metadata.db)</h2>
+        <pre>
+-- Active Schedules Table
+CREATE TABLE schedules (
+    metric_name TEXT, 
+    target_db TEXT, 
+    target_table TEXT, 
+    freq TEXT, 
+    run_time TEXT, 
+    run_date TEXT, 
+    sync_mode TEXT,
+    PRIMARY KEY (metric_name, target_table)
+);</pre>
+    </section>
+
+    <section id="troubleshooting" class="border-top pt-4">
+        <h2 class="section-header text-danger">8. Debugging Protocols</h2>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="card h-100 border-warning">
+                    <div class="card-body">
+                        <h6 class="fw-bold"><i class="bi bi-key"></i> Credential Issues</h6>
+                        <ul class="small">
+                            <li>Verify <strong>Username and Password</strong> in the Profile tab. Check for case sensitivity.</li>
+                            <li>Ensure the user account exists in the <code>users</code> metadata table.</li>
+                            <li class="text-danger fw-bold">Still facing issues? Connect with the System Admin for credential reset or account unlock.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-primary">
+                    <div class="card-body">
+                        <h6 class="fw-bold"><i class="bi bi-braces"></i> SQL Pushing Issues</h6>
+                        <ul class="small">
+                            <li><strong>Validate Codes:</strong> Test the HiveQL logic in a separate command-line tool first.</li>
+                            <li><strong>Check Aliases:</strong> Ensure <code>AS</code> names do not contain special characters or spaces.</li>
+                            <li>Verify that the target ClickHouse table isn't locked by another process.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card border-info shadow-sm">
+                    <div class="card-body">
+                        <h6 class="fw-bold"><i class="bi bi-wifi"></i> Connectivity Issues</h6>
+                        <ul class="small">
+                            <li><strong>Check Hive:</strong> Ensure Host/Port 10000 is reachable from the server.</li>
+                            <li><strong>Check ClickHouse:</strong> Ensure Port 8123 (HTTP) is open and reachable.</li>
+                            <li>Check network routing: Ensure the DataBridge Pro server is on the correct VPN/subnet to talk to the data lake.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-5 pt-5 text-muted border-top small pb-5 text-center">
+        &copy; 2026 DataBridge Pro | Confidential Engineering Documentation | v1.2
+    </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
